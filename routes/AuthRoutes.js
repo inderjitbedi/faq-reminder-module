@@ -17,18 +17,17 @@ const loginSchema = Joi.object({
 
 router.post("/register", async (req, res) => {
     const { error } = registerSchema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send({
+        statusCode: 400,
+        message: error.details[0].message
+    });
 
-    //Check if the user is allready in the db
     const emailExists = await User.findOne({ email: req.body.email });
-
     if (emailExists) return res.status(400).send("Email already exists");
 
-    //hash passwords
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-    //create new user
     const user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -45,19 +44,23 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     const { error } = loginSchema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
+    if (error) {
+        return res.status(400).send({
+            statusCode: 400,
+            message: "Enter a valid " + error.details[0].context.key
+        });
+    }
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) return res.status(400).send({
         statusCode: 400,
-        message: "Email or password is wrong"
+        message: "Email doesn't exists"
     });
 
     const validPass = await bcrypt.compare(req.body.password, user.password);
     if (!validPass) return res.status(400).send({
         statusCode: 400,
-        message: "Email or password is wrong"
+        message: "Password entered is wrong"
     });
 
     const auth_token = jwt.sign({ name: user.name, email: user.email, _id: user._id }, process.env.TOKEN_SECRET);

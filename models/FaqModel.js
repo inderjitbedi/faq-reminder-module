@@ -1,19 +1,17 @@
 const mongoose = require("mongoose");
 
-
 const FaqSchema = new mongoose.Schema({
-
     question: {
         type: String,
         required: true,
-        min: 2,
-        max: 2550,
+        min: 1,
+        max: 1000,
     },
     answer: {
         type: String,
         required: true,
-        min: 2,
-        max: 2550,
+        min: 1,
+        max: 2500,
     },
     updatedAt: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },

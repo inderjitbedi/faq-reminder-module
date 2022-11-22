@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="http://localhost:5000/css/bootstrap.css">
+  <script src="http://localhost:5000/js/jquery-3.3.1.slim.min.js"></script>
+  <script src="http://localhost:5000/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="http://localhost:5000/css/style.css">
+</head>
+
+<body>
+
+  <header></header>
+  <div id="inner_banner" class="section inner_banner_section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="full">
+            <div class="title-holder">
+              <div class="title-holder-cell text-left">
+                <h1 class="page-title">Faq</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <!-- <div class="col-md-4">
+            </div> -->
+      <div class="col-md-12">
+        <div class="accordion" id="accordion">
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  </script>
+  <script type="text/javascript">
+    const fetchFaq = async () => {
+      const apiUrl = 'http://localhost:5000/api/faq/public-list';
+      const result = await fetch(apiUrl);
+      const jsonResult = await result.json();
+      const faqs = jsonResult?.response;
+      let htmlToAppend = '';
+      faqs.forEach((faq, i) => {
+        htmlToAppend += `
+            <div class="card">
+            <div class="card-header" id="heading${i}">
+              <h5 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}"
+                  aria-expanded="false" aria-controls="collapse${i}">
+                  ${faq.question}
+                </button>
+              </h5>
+            </div>
+            <div id="collapse${i}" class="collapse show" aria-labelledby="heading${i}">
+              <div class="card-body">
+                ${faq.answer}
+              </div>
+            </div>
+          </div>
+            `
+      });
+      if (htmlToAppend === '') {
+        htmlToAppend = 'No FAQs found.';
+      }
+      document.getElementById("accordion").innerHTML = htmlToAppend;
+      $('.collapse').collapse();
+    }
+    fetchFaq();
+  </script>
+</body>
+
+</html>
