@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="http://localhost:5000/css/bootstrap.css">
-  <script src="http://localhost:5000/js/jquery-3.3.1.slim.min.js"></script>
-  <script src="http://localhost:5000/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="http://localhost:5000/css/style.css">
+  <link rel="stylesheet" href="https://faq-admin-server.herokuapp.com/css/bootstrap.css">
+  <script src="https://faq-admin-server.herokuapp.com/js/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://faq-admin-server.herokuapp.com/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://faq-admin-server.herokuapp.com/css/style.css">
 </head>
 
 <body>
@@ -42,7 +42,7 @@
   </script>
   <script type="text/javascript">
     const fetchFaq = async () => {
-      const apiUrl = 'http://localhost:5000/api/faq/public-list';
+      const apiUrl = 'https://faq-admin-server.herokuapp.com/api/faq/public-list';
       const result = await fetch(apiUrl);
       const jsonResult = await result.json();
       const faqs = jsonResult?.response;
