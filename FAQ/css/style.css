@@ -115,8 +115,10 @@ body {
     background: #fff;
     border-radius: 0;
     min-height: 50px;
-    padding: 17px 25px 15px;
+    padding: 17px 40px 15px 17px;
     text-decoration: none !important;
+    white-space: inherit;
+    position: relative;
 }
 button.btn.btn-link.collapsed{
     background: #fff;
@@ -136,8 +138,9 @@ button.btn.btn-link.collapsed::after {
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 3px;
-    position: relative;
-    top: 8px;
+    position: absolute;
+    top: 48%;
+    right: 18px;
     content: " ";
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
@@ -152,8 +155,9 @@ button.btn.btn-link::after{
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 3px;
-    position: relative;
-    top: 8px;
+    position: absolute;
+    top: 49%;
+    right: 18px;
     content: " ";
 }
 @media (min-width: 576px) {
@@ -181,7 +185,9 @@ button.btn.btn-link::after{
 }
 
 
-.container {
-    width: 1200px;
-    max-width: 1200px;
+@media (min-width: 1299px) {
+    .container {
+        width: 1200px;
+        max-width: 1200px;
+    }
 }
