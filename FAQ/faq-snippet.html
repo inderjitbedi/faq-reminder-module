@@ -42,7 +42,10 @@
   </script>
   <script type="text/javascript">
     const fetchFaq = async () => {
-      const apiUrl = 'https://faq-admin-server.herokuapp.com/api/faq/public-list';
+      let params = (new URL(document.location)).searchParams;
+      let category = params.get("category");
+      const apiUrl = 'https://faq-admin-server.herokuapp.com/api/faq/public-list/' + category;
+      // const apiUrl = 'http://localhost:5000/api/faq/public-list/'+category;
       const result = await fetch(apiUrl);
       const jsonResult = await result.json();
       const faqs = jsonResult?.response;
