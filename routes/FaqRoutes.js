@@ -124,12 +124,12 @@ router.post("/create", validateToken, async (req, res) => {
     const faq = await Faq.create(req.body);
     if (!faq) return res.status(400).send({
         statusCode: 400,
-        message:( "Unable to create FAQ" + (req.body.length > 1 ? "s" : ""))
+        message: "Unable to create FAQ" + (req?.body?.length > 1 ? "s" : "")
     });
     else return res.status(201).send({
         statusCode: 201,
-        message: ("FAQ" + (req.body.length > 1 ? "s" : "") + " created successfully."),
-        response: { ...faq._doc }
+        message: "FAQ" + (req?.body?.length > 1 ? "s" : "") + " created successfully.",
+        // response: { ...faq._doc }
     })
 })
 
