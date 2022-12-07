@@ -19,6 +19,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
     storage: storage, fileFilter: (req, file, cb) => {
+        console.log(file)
         const filetypes = /jpeg|jpg|png|gif|xlsx|xls/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = filetypes.test(file.mimetype);
@@ -30,7 +31,7 @@ const upload = multer({
     }
 })
 
-router.post('/upload', upload.single('file'), async (req, res) => {
+router.post('/upload', upload.single('cover'), async (req, res) => {
     try {
         if (!req.file) {
             res.send({
@@ -38,19 +39,19 @@ router.post('/upload', upload.single('file'), async (req, res) => {
                 message: 'No file uploaded'
             });
         } else {
-            try {
-                  var xlsxJson = xlsxToJson(path.join(process.cwd(), req.file.path));
-            if (xlsxJson)
+            // try {
+            //       var xlsxJson = xlsxToJson(path.join(process.cwd(), req.file.path));
+            // if (xlsxJson)
                 res.send({
                     status: true,
-                    message: 'File uploaded and converted to json successfully',
+                    message: 'File uploaded successfully',
                     data: {
-                        ...xlsxJson
+                        ... req.file
                     }
                 });
-            } catch (error) {
-                res.status(400).send(error);
-            }
+            // } catch (error) {
+            //     res.status(400).send(error);
+            // }
         }
     } catch (err) {
         res.status(400).send(err);

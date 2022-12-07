@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //route middlewares
 app.use("/api/auth", AuthRoutes);
 app.use("/api/faq", FaqRoutes);
-// app.use("/api/file", FileRoutes);
+app.use("/api/file", FileRoutes);
 
 app.use(express.static(path.join(__dirname, 'FAQ')));
 app.use(express.static(path.join(__dirname, 'public')));
