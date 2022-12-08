@@ -46,6 +46,8 @@ app.use("/api/file", FileRoutes);
 
 app.use(express.static(path.join(__dirname, 'FAQ')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'uploads')));
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/index.html'))

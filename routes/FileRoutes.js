@@ -7,12 +7,12 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        let path = `uploads/${file?.mimetype?.split('/')[1] || 'others'}`;
+        let path = `uploads/${file.fieldname}`;
         fs.mkdirsSync(path);
         callback(null, path);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + "_" + file.originalname);
+        cb(null, Date.now() + "_" + file.originalname.replaceAll(' ', '_'));
     },
     limits: { fileSize: 4000000 }, // 4MB
 
@@ -20,13 +20,13 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage, fileFilter: (req, file, cb) => {
         console.log(file)
-        const filetypes = /jpeg|jpg|png|gif|xlsx|xls/;
+        const filetypes = /jpeg|jpg|png/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = filetypes.test(file.mimetype);
         if (mimetype && extname) {
             return cb(null, true);
         } else {
-            cb(new Error('Error: File must be of type jpeg|jpg|png|gif|xlsx|xls!'));
+            cb(new Error('Error: File must be of type jpeg|jpg|png!'));
         }
     }
 })
@@ -34,7 +34,7 @@ const upload = multer({
 router.post('/upload', upload.single('cover'), async (req, res) => {
     try {
         if (!req.file) {
-            res.send({
+            res.status(400).send({
                 statusCode: 400,
                 message: 'No file uploaded'
             });
@@ -42,8 +42,8 @@ router.post('/upload', upload.single('cover'), async (req, res) => {
             // try {
             //       var xlsxJson = xlsxToJson(path.join(process.cwd(), req.file.path));
             // if (xlsxJson)
-                res.send({
-                    status: true,
+                res.status(200).send({
+                    statusCode: 200,
                     message: 'File uploaded successfully',
                     data: {
                         ... req.file

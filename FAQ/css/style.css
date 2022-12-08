@@ -3,10 +3,10 @@ body {
 }
 
 .inner_banner_section {
-    background: url(https://faq-admin-server.herokuapp.com/images/inner_page_banner.jpg);
     min-height: 245px;
-    background-size: cover;
-    background-position: center center;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
 }
 
 .row {
@@ -102,13 +102,15 @@ body {
     margin-left: auto;
 }
 
-.card{
+.card {
     margin-bottom: 16px;
 }
-.card-header{
-  padding: 0;
-  border: 0;
+
+.card-header {
+    padding: 0;
+    border: 0;
 }
+
 .card-header button.btn.btn-link {
     width: 100%;
     text-align: left;
@@ -120,15 +122,19 @@ body {
     white-space: inherit;
     position: relative;
 }
-button.btn.btn-link.collapsed{
+
+button.btn.btn-link.collapsed {
     background: #fff;
 }
-button.btn.btn-link[aria-expanded="true"]{
-    background: #039ee3;
+
+button.btn.btn-link[aria-expanded="true"] {
+    background: var(--background-color);
     color: #fff;
 }
-.btn-link:hover, .btn-link{
-  
+
+.btn-link:hover,
+.btn-link {
+
     color: #000;
 }
 
@@ -146,7 +152,8 @@ button.btn.btn-link.collapsed::after {
     -webkit-transform: rotate(45deg);
     transition: ease all 0.5s;
 }
-button.btn.btn-link::after{
+
+button.btn.btn-link::after {
     transform: rotate(-135deg);
     -webkit-transform: rotate(-135deg);
     transition: ease all 0.5s;
@@ -160,6 +167,7 @@ button.btn.btn-link::after{
     right: 18px;
     content: " ";
 }
+
 @media (min-width: 576px) {
     .container {
         max-width: 540px;

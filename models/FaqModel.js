@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const FaqCategory = require("./FaqCategoryModel")
 
 const FaqSchema = new mongoose.Schema({
-    categoryId:{type:mongoose.Types.ObjectId,ref:FaqCategory},
+    categoryId: { type: mongoose.Types.ObjectId, ref: FaqCategory },
     question: {
         type: String,
         required: true,

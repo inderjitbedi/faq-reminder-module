@@ -47,18 +47,31 @@ router.get("/check-uniqueness-category/:name", validateToken, async (req, res) =
 
 // create faq category
 router.post("/create-category", validateToken, async (req, res) => {
-    const faqExist = await FaqCategory.find({ name: req.body.name });
-    console.log(faqExist)
+    let criteria = { name: req.body.name, isDeleted: false  }
+    if (req.body._id)
+        criteria = { ...criteria, _id: { $ne: req.body._id } }
+    const faqExist = await FaqCategory.find(criteria);
     if (faqExist.length) return res.status(400).send({
         statusCode: 400,
         message: "FAQ category name already exists"
     });
+    console.log("unique check passed", req.body);
+    if (req.body._id)
+        var faq = await FaqCategory.findOneAndUpdate({ _id: req.body._id }, { ...req.body, updatedAt: new Date() }, { upsert: true });
+    else
+        var faq = await FaqCategory.create(req.body);
 
-    const faq = await FaqCategory.create(req.body);
+
     if (!faq) return res.status(400).send({
         statusCode: 400,
         message: "Unable to create FAQ category"
     });
+    else if (req.body._id)
+        return res.status(200).send({
+            statusCode: 200,
+            message: "FAQ category updated successfully.",
+            response: { ...faq._doc }
+        })
     else return res.status(201).send({
         statusCode: 201,
         message: "FAQ category created successfully.",
@@ -105,7 +118,7 @@ router.get("/list/:categoryId", validateToken, async (req, res) => {
 // get faq list - open api
 router.get("/public-list/:categoryId", async (req, res) => {
 
-    const faq = await Faq.find({ categoryId: req.params.categoryId, isDeleted: false }, { question: 1, answer: 1, _id: 0 })
+    const faq = await Faq.find({ categoryId: req.params.categoryId, isDeleted: false }, { question: 1, answer: 1, categoryId: 1, _id: 0 }).populate('categoryId')
         .sort({ createdAt: -1 });
     if (!faq) return res.status(400).send({
         statusCode: 400,

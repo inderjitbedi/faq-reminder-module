@@ -4,10 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://faq-admin-server.herokuapp.com/css/bootstrap.css">
+  <link rel="stylesheet" href="http://localhost:5000/css/bootstrap.css">
+  <script src="http://localhost:5000/js/jquery-3.3.1.slim.min.js"></script>
+  <script src="http://localhost:5000/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="http://localhost:5000/css/style.css">
+  <!-- <link rel="stylesheet" href="https://faq-admin-server.herokuapp.com/css/bootstrap.css">
   <script src="https://faq-admin-server.herokuapp.com/js/jquery-3.3.1.slim.min.js"></script>
   <script src="https://faq-admin-server.herokuapp.com/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://faq-admin-server.herokuapp.com/css/style.css">
+  <link rel="stylesheet" href="https://faq-admin-server.herokuapp.com/css/style.css"> -->
 </head>
 
 <body>
@@ -20,7 +24,7 @@
           <div class="full">
             <div class="title-holder">
               <div class="title-holder-cell text-left">
-                <h1 class="page-title">Faq</h1>
+                <h1 class="page-title" id="faqTitle">Faq</h1>
               </div>
             </div>
           </div>
@@ -30,8 +34,6 @@
   </div>
   <div class="container">
     <div class="row">
-      <!-- <div class="col-md-4">
-            </div> -->
       <div class="col-md-12">
         <div class="accordion" id="accordion">
         </div>
@@ -44,11 +46,20 @@
     const fetchFaq = async () => {
       let params = (new URL(document.location)).searchParams;
       let category = params.get("category");
-      const apiUrl = 'https://faq-admin-server.herokuapp.com/api/faq/public-list/' + category;
-      // const apiUrl = 'http://localhost:5000/api/faq/public-list/'+category;
+      // const apiUrl = 'https://faq-admin-server.herokuapp.com/api/faq/public-list/' + category;
+      const apiUrl = 'http://localhost:5000/api/faq/public-list/' + category;
       const result = await fetch(apiUrl);
       const jsonResult = await result.json();
-      const faqs = jsonResult?.response;
+      const faqs = jsonResult?.response || [];
+      var categoryObj = faqs.length ? faqs[0].categoryId : null;
+
+      let root = document.documentElement;
+      root.style.setProperty('--background-color', categoryObj ? categoryObj.color || '#039ee3' : '#039ee3');
+      document.getElementById('inner_banner').style.background = categoryObj ? 'url("http://localhost:5000/' + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(https://faq-admin-server.herokuapp.com/images/inner_page_banner.jpg)';
+      console.log(categoryObj.name);
+      categoryObj.name = categoryObj ? (categoryObj.name.split(" ").map(([firstChar, ...rest]) => (firstChar ? firstChar?.toUpperCase() : '') + (rest ? rest?.join("")?.toLowerCase() : '')).join(" ")) : ''
+      document.getElementById('faqTitle').innerHTML = categoryObj ? categoryObj.name : 'Faq'
+
       let htmlToAppend = '';
       faqs.forEach((faq, i) => {
         htmlToAppend += `
