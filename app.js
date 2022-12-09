@@ -26,7 +26,7 @@ app.use(express.json());
 var originsWhitelist = [
     '*',
     'http://localhost:4200',
-    'https://admin-r94u.onrender.com/'
+    'https://admin-server-tmoj.onrender.com/'
 ];
 var corsOptions = {
     origin: function (origin, callback) {
