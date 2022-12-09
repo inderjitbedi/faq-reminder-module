@@ -8,10 +8,10 @@
   <script src="http://localhost:5000/js/jquery-3.3.1.slim.min.js"></script>
   <script src="http://localhost:5000/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="http://localhost:5000/css/style.css"> -->
-  <link rel="stylesheet" href="https://admin-server-tmoj.onrender.com/css/bootstrap.css">
-  <script src="https://admin-server-tmoj.onrender.com/js/jquery-3.3.1.slim.min.js"></script>
-  <script src="https://admin-server-tmoj.onrender.com/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://admin-server-tmoj.onrender.com/css/style.css">
+  <link rel="stylesheet" href="https://admin-server-g02w.onrender.com/css/bootstrap.css">
+  <script src="https://admin-server-g02w.onrender.com/js/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://admin-server-g02w.onrender.com/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://admin-server-g02w.onrender.com/css/style.css">
 </head>
 
 <body>
@@ -46,7 +46,7 @@
     const fetchFaq = async () => {
       let params = (new URL(document.location)).searchParams;
       let category = params.get("category");
-      const apiUrl = 'https://admin-server-tmoj.onrender.com/api/faq/public-list/' + category;
+      const apiUrl = 'https://admin-server-g02w.onrender.com/api/faq/public-list/' + category;
       // const apiUrl = 'http://localhost:5000/api/faq/public-list/' + category;
       const result = await fetch(apiUrl);
       const jsonResult = await result.json();
@@ -55,8 +55,8 @@
 
       let root = document.documentElement;
       root.style.setProperty('--background-color', categoryObj ? categoryObj.color || '#039ee3' : '#039ee3');
-      document.getElementById('inner_banner').style.background = categoryObj ? 'url("https://admin-server-tmoj.onrender.com/' + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(https://admin-server-tmoj.onrender.com/images/inner_page_banner.jpg)';
-      // document.getElementById('inner_banner').style.background = categoryObj ? 'url("http://localhost:5000/' + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(https://admin-server-tmoj.onrender.com/images/inner_page_banner.jpg)';
+      document.getElementById('inner_banner').style.background = categoryObj ? 'url("https://admin-server-g02w.onrender.com/' + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(https://admin-server-g02w.onrender.com/images/inner_page_banner.jpg)';
+      // document.getElementById('inner_banner').style.background = categoryObj ? 'url("http://localhost:5000/' + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(https://admin-server-g02w.onrender.com/images/inner_page_banner.jpg)';
     
       categoryObj.name = categoryObj ? (categoryObj.name.split(" ").map(([firstChar, ...rest]) => (firstChar ? firstChar?.toUpperCase() : '') + (rest ? rest?.join("")?.toLowerCase() : '')).join(" ")) : ''
       document.getElementById('faqTitle').innerHTML = categoryObj ? categoryObj.name : 'Faq'
