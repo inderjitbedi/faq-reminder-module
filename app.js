@@ -26,7 +26,7 @@ app.use(express.json());
 var originsWhitelist = [
     '*',
     'http://localhost:4200',
-    'https://admin-server-g02w.onrender.com/'
+    'https://lionfish-app-eegmr.ondigitalocean.app/'
 ];
 var corsOptions = {
     origin: function (origin, callback) {
