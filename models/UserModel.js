@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
         max: 255,
     },
     dob: { type: Date, default: null },
-    isActive: { type: Boolean, default: true },
+    isDeleted: { type: Boolean, default: false },
     updatedAt: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now }
 })

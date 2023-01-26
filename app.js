@@ -11,6 +11,8 @@ const bodyParser = require('body-parser');
 const AuthRoutes = require("./routes/AuthRoutes");
 const FaqRoutes = require("./routes/FaqRoutes");
 const FileRoutes = require("./routes/FileRoutes");
+const ReminderRoutes = require("./routes/ReminderRoutes");
+
 
 dotenv.config();
 
@@ -44,11 +46,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/auth", AuthRoutes);
 app.use("/api/faq", FaqRoutes);
 app.use("/api/file", FileRoutes);
+app.use("/api/reminder", ReminderRoutes);
 
 app.use(express.static(path.join(__dirname, 'FAQ')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'uploads')));
-
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/index.html'))

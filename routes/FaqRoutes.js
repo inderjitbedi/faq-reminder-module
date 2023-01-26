@@ -27,9 +27,10 @@ function validateToken(req, res, next) {
 // get faq categories
 router.get("/categories", validateToken, async (req, res) => {
     const faq = await FaqCategory.find({ isDeleted: false }).sort({ createdAt: -1 });
-    if (!faq) return res.status(400).send({
-        statusCode: 400,
-        message: "Unable to find FAQs"
+    if (!faq) return res.status(200).send({
+        statusCode: 200,
+        response: [],
+        message: "No FAQs found"
     });
     else return res.status(200).send({
         statusCode: 200,
@@ -44,7 +45,6 @@ router.get("/check-uniqueness-category/:name", validateToken, async (req, res) =
         isUnique: faqExist.length ? false : true
     });
 })
-
 // create faq category
 router.post("/create-category", validateToken, async (req, res) => {
     let criteria = { name: req.body.name, isDeleted: false  }
@@ -55,7 +55,6 @@ router.post("/create-category", validateToken, async (req, res) => {
         statusCode: 400,
         message: "FAQ category name already exists"
     });
-    console.log("unique check passed", req.body);
     if (req.body._id)
         var faq = await FaqCategory.findOneAndUpdate({ _id: req.body._id }, { ...req.body, updatedAt: new Date() }, { upsert: true });
     else
