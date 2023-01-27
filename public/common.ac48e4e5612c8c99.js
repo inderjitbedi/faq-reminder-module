@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkadmin=self.webpackChunkadmin||[]).push([[592],{2510:(s,c,t)=>{t.d(c,{d:()=>u});var i=t(4650);let u=(()=>{class e{isErrorState(r,a){return!!(r&&r.invalid&&(r.dirty||r.touched||a&&a.submitted))}}return e.\u0275fac=function(r){return new(r||e)},e.\u0275prov=i.Yz7({token:e,factory:e.\u0275fac,providedIn:"root"}),e})()}}]);
