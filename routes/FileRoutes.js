@@ -17,7 +17,8 @@ const storage = multer.diskStorage({
     limits: { fileSize: 4000000 }, // 4MB
 
 });
-const upload = multer({
+
+const uploadCover = multer({
     storage: storage, fileFilter: (req, file, cb) => {
         console.log(file)
         const filetypes = /jpeg|jpg|png/;
@@ -31,7 +32,46 @@ const upload = multer({
     }
 })
 
-router.post('/upload', upload.single('cover'), async (req, res) => {
+const videoStorage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        let path = `uploads/${file.fieldname}`;
+        fs.mkdirsSync(path);
+        callback(null, path);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "_" + file.originalname.replaceAll(' ', '_'));
+    },
+    limits: { fileSize: 200000000 }, // 200MB
+
+});
+const uploadVideo = multer({
+    storage: videoStorage, fileFilter: (req, file, cb) => {
+        console.log(file)
+        const filetypes = /mp4|ogg|webm/;
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = filetypes.test(file.mimetype);
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Error: File must be of type mp4|ogg|webm!'));
+        }
+    }
+})
+const uploadAudio= multer({
+    storage: videoStorage, fileFilter: (req, file, cb) => {
+        console.log(file)
+        const filetypes = /mp3|ogg|wav|mpeg/;
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = filetypes.test(file.mimetype);
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Error: File must be of type mp3|ogg|wav|mpeg!'));
+        }
+    }
+})
+
+router.post('/upload', uploadCover.single('cover'), async (req, res) => {
     try {
         if (!req.file) {
             res.status(400).send({
@@ -39,19 +79,34 @@ router.post('/upload', upload.single('cover'), async (req, res) => {
                 message: 'No file uploaded'
             });
         } else {
-            // try {
-            //       var xlsxJson = xlsxToJson(path.join(process.cwd(), req.file.path));
-            // if (xlsxJson)
-                res.status(200).send({
-                    statusCode: 200,
-                    message: 'File uploaded successfully',
-                    data: {
-                        ... req.file
-                    }
-                });
-            // } catch (error) {
-            //     res.status(400).send(error);
-            // }
+            res.status(200).send({
+                statusCode: 200,
+                message: 'File uploaded successfully',
+                data: {
+                    ...req.file
+                }
+            });
+        }
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
+router.post('/upload-video', uploadVideo.single('video'), async (req, res) => {
+    try {
+        if (!req.file) {
+            res.status(400).send({
+                statusCode: 400,
+                message: 'No file uploaded'
+            });
+        } else {
+            res.status(200).send({
+                statusCode: 200,
+                message: 'File uploaded successfully',
+                data: {
+                    ...req.file
+                }
+            });
         }
     } catch (err) {
         res.status(400).send(err);
@@ -59,6 +114,26 @@ router.post('/upload', upload.single('cover'), async (req, res) => {
 });
 
 
+router.post('/upload-audio', uploadAudio.single('audio'), async (req, res) => {
+    try {
+        if (!req.file) {
+            res.status(400).send({
+                statusCode: 400,
+                message: 'No file uploaded'
+            });
+        } else {
+            res.status(200).send({
+                statusCode: 200,
+                message: 'File uploaded successfully',
+                data: {
+                    ...req.file
+                }
+            });
+        }
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
 const xlsxToJson = (filePath) => {
     try {
         const file = reader.readFile(filePath)
@@ -72,7 +147,7 @@ const xlsxToJson = (filePath) => {
         }
         return data
     } catch (error) {
-       return error;
+        return error;
     }
 }
 

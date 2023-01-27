@@ -117,7 +117,14 @@ router.get("/list/:categoryId", validateToken, async (req, res) => {
 // get faq list - open api
 router.get("/public-list/:categoryId", async (req, res) => {
 
-    const faq = await Faq.find({ categoryId: req.params.categoryId, isDeleted: false }, { question: 1, answer: 1, categoryId: 1, _id: 0 }).populate('categoryId')
+    const faq = await Faq.find({ categoryId: req.params.categoryId, isDeleted: false }, {
+         question: 1, 
+         answer: 1, 
+         type:1,
+         audioLink:1,
+         videoLink:1,
+         youtubeLink:1,
+         categoryId: 1, _id: 0 }).populate('categoryId')
         .sort({ createdAt: -1 });
     if (!faq) return res.status(400).send({
         statusCode: 400,

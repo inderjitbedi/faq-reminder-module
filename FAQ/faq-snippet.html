@@ -12,6 +12,8 @@
   <script src="https://lionfish-app-eegmr.ondigitalocean.app/js/jquery-3.3.1.slim.min.js"></script>
   <script src="https://lionfish-app-eegmr.ondigitalocean.app/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://lionfish-app-eegmr.ondigitalocean.app/css/style.css">
+  <style>
+  </style>
 </head>
 
 <body>
@@ -46,8 +48,9 @@
     const fetchFaq = async () => {
       let params = (new URL(document.location)).searchParams;
       let category = params.get("category");
-      const apiUrl = 'https://lionfish-app-eegmr.ondigitalocean.app/api/faq/public-list/' + category;
-      // const apiUrl = 'http://localhost:5000/api/faq/public-list/' + category;
+      const baseUrl="https://lionfish-app-eegmr.ondigitalocean.app/"
+      // const baseUrl = "http://localhost:5000/";
+      const apiUrl = baseUrl + 'api/faq/public-list/' + category;
       const result = await fetch(apiUrl);
       const jsonResult = await result.json();
       const faqs = jsonResult?.response || [];
@@ -55,9 +58,8 @@
 
       let root = document.documentElement;
       root.style.setProperty('--background-color', categoryObj ? categoryObj.color || '#039ee3' : '#039ee3');
-      document.getElementById('inner_banner').style.background = categoryObj ? 'url("https://lionfish-app-eegmr.ondigitalocean.app/' + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(https://lionfish-app-eegmr.ondigitalocean.app/images/inner_page_banner.jpg)';
-      // document.getElementById('inner_banner').style.background = categoryObj ? 'url("http://localhost:5000/' + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(https://lionfish-app-eegmr.ondigitalocean.app/images/inner_page_banner.jpg)';
-    
+      document.getElementById('inner_banner').style.background = categoryObj ? 'url("' + baseUrl + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(' + baseUrl + 'images/inner_page_banner.jpg)';
+
       categoryObj.name = categoryObj ? (categoryObj.name.split(" ").map(([firstChar, ...rest]) => (firstChar ? firstChar?.toUpperCase() : '') + (rest ? rest?.join("")?.toLowerCase() : '')).join(" ")) : ''
       document.getElementById('faqTitle').innerHTML = categoryObj ? categoryObj.name : 'Faq'
 
@@ -74,9 +76,36 @@
               </h5>
             </div>
             <div id="collapse${i}" class="collapse show" aria-labelledby="heading${i}">
-              <div class="card-body">
-                ${faq.answer}
-              </div>
+              <div class="card-body">`
+
+
+        if (faq.type == '2') {
+          htmlToAppend += `
+          <div class="text-center">
+              <iframe type="text/html" width="640" height="360" src="${faq.youtubeLink}" frameborder="0" allowfullscreen></iframe>
+          </div>`
+        } else if (faq.type == '3') {
+          htmlToAppend += `
+          <div class="text-center">
+            <video controls src="${baseUrl + faq.videoLink}"  width="620">
+                Sorry, your browser doesn't support embedded videos.
+            </video>
+          </div>`
+        } else if (faq.type == '4') {
+          htmlToAppend += `
+          <div class="text-center"> 
+            <audio controls>
+                <source src="${baseUrl + faq.audioLink}">
+                Sorry, your browser does not support the audio element.
+            </audio>
+          </div>`
+        } else {
+          // if (faq.type == '1') {
+          htmlToAppend += faq.answer
+          // }
+        }
+
+        htmlToAppend += ` </div>
             </div>
           </div>
             `

@@ -9,11 +9,29 @@ const FaqSchema = new mongoose.Schema({
         min: 1,
         max: 1000,
     },
-    answer: {
+    type: {
         type: String,
         required: true,
+    },
+    answer: {
+        type: String,
         min: 1,
         max: 2500,
+    },
+    youtubeLink: {
+        type: String,
+        min: 1,
+        max: 500,
+    },
+    audioLink: {
+        type: String,
+        min: 1,
+        max: 500,
+    },
+    videoLink: {
+        type: String,
+        min: 1,
+        max: 500,
     },
     updatedAt: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },
