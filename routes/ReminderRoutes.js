@@ -8,6 +8,8 @@ const BillOccurrence = require("../models/BillOccurrenceModel");
 const PaymentMethodModel = require("../models/PaymentMethodModel");
 const BillCategoryModel = require("../models/BillCategoryModel");
 const _ = require('lodash')
+const cron = require('node-cron');
+
 
 function validateToken(req, res, next) {
     const authHeader = req.headers["authorization"]
@@ -31,20 +33,7 @@ function validateToken(req, res, next) {
 
 // get bills
 router.get("/bills", validateToken, async (req, res) => {
-    const bills = await Bill.find({ isDeleted: false }).populate([{
-        path: 'paymentMethodId',
-        model: PaymentMethodModel,
-    },
-    {
-        path: 'billCategoryId',
-        model: BillCategoryModel,
-    }]).sort({ createdAt: -1 });
-
-    // bills.forEach(bill => {
-    // console.log("eheehe")
-    // createOccurrence(bill)
-    // })
-
+    const bills = await getBills()
     if (!bills) return res.status(400).send({
         statusCode: 400,
         message: "Unable to find Bills"
@@ -172,9 +161,8 @@ router.post("/create-bill", validateToken, async (req, res) => {
         response: { ...bill._doc }
     })
 })
-
 router.put("/mark-as-paid", validateToken, async (req, res) => {
-    var occurrence = await BillOccurrence.findOneAndUpdate({ _id: req.body._id }, { isPaid: true, updatedAt: new Date() });
+    var occurrence = await markOccurrenceAsPaid(req.body._id)
     if (!occurrence) return res.status(200).send({
         statusCode: 200,
         message: "Unable to make the bill occurrence as paid"
@@ -204,25 +192,8 @@ router.get("/list", validateToken, async (req, res) => {
             $lte: req.query.lte,
         }
     }
-    console.log("BillOccurrence.find options = ", options)
-    var occurrences = await BillOccurrence.find(options).populate([
-        {
-            path: 'billId',
-            populate:
-                [{
-                    path: 'paymentMethodId',
-                    model: PaymentMethodModel,
-                },
-                {
-                    path: 'billCategoryId',
-                    model: BillCategoryModel,
-                }]
-        },
-        {
-            path: 'paymentMethodId',
-            model: PaymentMethodModel,
-        },]
-    ).sort({ occurrenceDate: 1 });
+    // console.log("BillOccurrence.find options = ", options)
+    var occurrences = await getBillOccurrences(options);
     let amountDue = 0;
     let lastOccurrenceDate = moment().add(30, 'days')
     if (req.query.gte && req.query.lte) {
@@ -298,11 +269,11 @@ async function createOccurrence(bill, ignoreDates = []) {
     delete occurrence.createdAt
     delete occurrence.__v
 
-    // console.log(" before ignoreDates = ", ignoreDates)
-
     if (repeatsAfter > 0) {
+        console.log("Entered repeating occurrence block")
         while (moment().startOf('day') <= billCycleDate && billCycleDate <= lastOfNextMonth.endOf('day')) {
             occurrence.occurrenceDate = billCycleDate.endOf('day')
+            // console.log("occurrenceDate = ", occurrence.occurrenceDate)
             let ignoreDate = ignoreDates.filter(date => {
                 date = moment(date)
                 return date.format('D') == occurrence.occurrenceDate.format('D')
@@ -316,15 +287,18 @@ async function createOccurrence(bill, ignoreDates = []) {
                     occurrenceDate: occurrence.occurrenceDate,
                     isDeleted: false
                 })
+                console.log("Occurrence date = ", occurrence.occurrenceDate, ".. BillOccurrence found for the same?", billOccurrence.length ? true : false)
                 if (!billOccurrence.length) {
-                    // console.log("\n\n\n new occurrence = ", occurrence)
+                    console.log("\n Creating a new occurrence for date = ", occurrence.occurrenceDate, "\n", occurrence)
                     BillOccurrence.create(occurrence);
                 }
-
+            } else {
+                console.log("Occurrence date = ", occurrence.occurrenceDate, ".. Skipping this as it is already paid")
             }
             billCycleDate = addDaysToDate(billCycleDate, repeatsAfter);
         }
     } else {
+        console.log("Entered once occurrence block")
         occurrence.occurrenceDate = billCycleDate.endOf('day')
         const billOccurrence = await BillOccurrence.find({
             billId: occurrence.billId,
@@ -332,10 +306,70 @@ async function createOccurrence(bill, ignoreDates = []) {
             isDeleted: false
         })
         if (!billOccurrence.length) {
-            console.log("\n\n\n new occurrence = ", occurrence)
+            console.log("\n\n\n once occurrence = ", occurrence)
             BillOccurrence.create(occurrence);
         }
     }
 }
+
+async function markOccurrenceAsPaid(occurrenceId) {
+    return await BillOccurrence.findOneAndUpdate({ _id: occurrenceId }, { isPaid: true, updatedAt: new Date() });
+}
+async function getBillOccurrences(options) {
+    return await BillOccurrence.find(options).populate([
+        {
+            path: 'billId',
+            populate:
+                [{
+                    path: 'paymentMethodId',
+                    model: PaymentMethodModel,
+                },
+                {
+                    path: 'billCategoryId',
+                    model: BillCategoryModel,
+                }]
+        },
+        {
+            path: 'paymentMethodId',
+            model: PaymentMethodModel,
+        },]
+    ).sort({ occurrenceDate: 1 });
+}
+async function getBills() {
+
+    return await Bill.find({ isDeleted: false }).populate([{
+        path: 'paymentMethodId',
+        model: PaymentMethodModel,
+    },
+    {
+        path: 'billCategoryId',
+        model: BillCategoryModel,
+    }]).sort({ createdAt: -1 });
+
+
+}
+let job = cron.schedule('1 * * * *', async function () {
+    console.log("\n\n\n ************Cron job started************\n\n\n ")
+    let bills = await getBills()
+    console.log("Creating occurrences, if any...")
+    bills.forEach(bill => {
+        createOccurrence(bill);
+    })
+    let options = {
+        isDeleted: false,
+        occurrenceDate: {
+            $gte: moment().subtract(1, 'day').startOf('day'),
+        }
+    }
+    let occurrences = await getBillOccurrences(options)
+    console.log("Checking autopay occurrences...")
+    occurrences.forEach(async occurrence => {
+        if (moment(occurrence.occurrenceDate) < moment() && occurrence.isAutopay) {
+            console.log(occurrence.name, " set to be autopaid on ", moment(occurrence.occurrenceDate), " is marked as paid")
+            await markOccurrenceAsPaid(occurrence._id);
+        }
+    })
+})
+job.start();
 
 module.exports = router;
