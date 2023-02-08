@@ -150,14 +150,19 @@ router.get("/public-list/:categoryId", async (req, res) => {
 
 // create faq 
 router.post("/create", validateToken, async (req, res) => {
-    const faq = await Faq.create(req.body);
+    let body = req.body[0];
+    if (body._id)
+        var faq = await Faq.findOneAndUpdate({ _id: body._id }, { ...body, updatedAt: new Date() }, { upsert: true });
+    else
+        var faq = await Faq.create(body);
+
     if (!faq) return res.status(400).send({
         statusCode: 400,
-        message: "Unable to create FAQ" + (req?.body?.length > 1 ? "s" : "")
+        message: "Unable to create FAQ"
     });
     else return res.status(201).send({
         statusCode: 201,
-        message: "FAQ" + (req?.body?.length > 1 ? "s" : "") + " created successfully.",
+        message: "FAQ " + (body._id ? "updated" : "created") + " successfully.",
         // response: { ...faq._doc }
     })
 })
