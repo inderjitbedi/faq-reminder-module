@@ -8,10 +8,10 @@
   <script src="http://localhost:5000/js/jquery-3.3.1.slim.min.js"></script>
   <script src="http://localhost:5000/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="http://localhost:5000/css/style.css"> -->
-  <link rel="stylesheet" href="https://lionfish-app-eegmr.ondigitalocean.app/css/bootstrap.css">
-  <script src="https://lionfish-app-eegmr.ondigitalocean.app/js/jquery-3.3.1.slim.min.js"></script>
-  <script src="https://lionfish-app-eegmr.ondigitalocean.app/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://lionfish-app-eegmr.ondigitalocean.app/css/style.css">
+  <link rel="stylesheet" href="https://web-production-99f1.up.railway.app/css/bootstrap.css">
+  <script src="https://web-production-99f1.up.railway.app/js/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://web-production-99f1.up.railway.app/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://web-production-99f1.up.railway.app/css/style.css">
   <style>
   </style>
 </head>
@@ -48,8 +48,8 @@
     const fetchFaq = async () => {
       let params = (new URL(document.location)).searchParams;
       let category = params.get("category");
-      // const baseUrl = "https://lionfish-app-eegmr.ondigitalocean.app/"
-      const baseUrl = "http://localhost:5000/";
+      const baseUrl = "https://web-production-99f1.up.railway.app/"
+      // const baseUrl = "http://localhost:5000/";
       const apiUrl = baseUrl + 'api/faq/public-list/' + category;
       const result = await fetch(apiUrl);
       const jsonResult = await result.json();

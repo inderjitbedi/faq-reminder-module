@@ -28,7 +28,7 @@ app.use(express.json());
 var originsWhitelist = [
     '*',
     'http://localhost:4200',
-    'https://lionfish-app-eegmr.ondigitalocean.app/'
+    'https://web-production-99f1.up.railway.app/'
 ];
 var corsOptions = {
     origin: function (origin, callback) {
