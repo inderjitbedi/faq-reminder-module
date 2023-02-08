@@ -7,4 +7,6 @@
         }
       },
       "terminal.integrated.defaultProfile.windows": "PowerShell",
+      "appService.defaultWebAppToDeploy": "/subscriptions/e97341ff-adfb-409b-962b-19c8e0561ffb/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/admin-faq",
+      "appService.deploySubpath": ".",
 }

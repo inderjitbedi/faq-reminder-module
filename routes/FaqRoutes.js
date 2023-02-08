@@ -47,7 +47,7 @@ router.get("/check-uniqueness-category/:name", validateToken, async (req, res) =
 })
 // create faq category
 router.post("/create-category", validateToken, async (req, res) => {
-    let criteria = { name: req.body.name, isDeleted: false  }
+    let criteria = { name: req.body.name, isDeleted: false }
     if (req.body._id)
         criteria = { ...criteria, _id: { $ne: req.body._id } }
     const faqExist = await FaqCategory.find(criteria);
@@ -116,24 +116,34 @@ router.get("/list/:categoryId", validateToken, async (req, res) => {
 
 // get faq list - open api
 router.get("/public-list/:categoryId", async (req, res) => {
-
+    const faqCategory = await FaqCategory.findOne({ _id: req.params.categoryId, isDeleted: false });
     const faq = await Faq.find({ categoryId: req.params.categoryId, isDeleted: false }, {
-         question: 1, 
-         answer: 1, 
-         type:1,
-         audioLink:1,
-         videoLink:1,
-         youtubeLink:1,
-         categoryId: 1, _id: 0 }).populate('categoryId')
+        question: 1,
+        answer: 1,
+        type: 1,
+        audioLink: 1,
+        videoLink: 1,
+        youtubeLink: 1,
+        categoryId: 1, _id: 0
+    }).populate('categoryId')
         .sort({ createdAt: -1 });
-    if (!faq) return res.status(400).send({
-        statusCode: 400,
-        message: "Unable to find FAQs"
-    });
+    if (!faq) {
+        return res.status(200).send({
+            statusCode: 200,
+            message: "Unable to find FAQs",
+            response: {
+                faqCategory: faqCategory,
+                faqs: []
+            }
+        });
+    }
     else {
         return res.status(200).send({
             statusCode: 200,
-            response: [...faq]
+            response: {
+                faqCategory: faqCategory,
+                faqs: [...faq]
+            }
         })
     }
 })

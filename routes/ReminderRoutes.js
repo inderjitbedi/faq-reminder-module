@@ -348,7 +348,7 @@ async function getBills() {
 
 
 }
-let job = cron.schedule('1 * * * *', async function () {
+let job = cron.schedule('0 1 * * *', async function () {
     console.log("\n\n\n ************Cron job started************\n\n\n ")
     let bills = await getBills()
     console.log("Creating occurrences, if any...")

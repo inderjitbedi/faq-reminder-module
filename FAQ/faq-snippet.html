@@ -48,14 +48,14 @@
     const fetchFaq = async () => {
       let params = (new URL(document.location)).searchParams;
       let category = params.get("category");
-      const baseUrl="https://lionfish-app-eegmr.ondigitalocean.app/"
-      // const baseUrl = "http://localhost:5000/";
+      // const baseUrl = "https://lionfish-app-eegmr.ondigitalocean.app/"
+      const baseUrl = "http://localhost:5000/";
       const apiUrl = baseUrl + 'api/faq/public-list/' + category;
       const result = await fetch(apiUrl);
       const jsonResult = await result.json();
-      const faqs = jsonResult?.response || [];
-      var categoryObj = faqs.length ? faqs[0].categoryId : null;
-
+      const faqs = jsonResult?.response?.faqs || [];
+      var categoryObj = jsonResult?.response?.faqCategory || null;
+      console.log(categoryObj)
       let root = document.documentElement;
       root.style.setProperty('--background-color', categoryObj ? categoryObj.color || '#039ee3' : '#039ee3');
       document.getElementById('inner_banner').style.background = categoryObj ? 'url("' + baseUrl + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(' + baseUrl + 'images/inner_page_banner.jpg)';
