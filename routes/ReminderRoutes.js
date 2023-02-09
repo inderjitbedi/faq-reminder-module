@@ -34,6 +34,9 @@ function validateToken(req, res, next) {
 // get bills
 router.get("/bills", validateToken, async (req, res) => {
     const bills = await getBills()
+    bills.forEach(bill => {
+        createOccurrence(bill);
+    })
     if (!bills) return res.status(400).send({
         statusCode: 400,
         message: "Unable to find Bills"
@@ -46,9 +49,7 @@ router.get("/bills", validateToken, async (req, res) => {
 
 router.put("/delete-bill", validateToken, async (req, res) => {
     var bill = await Bill.findOneAndUpdate({ _id: req.body._id }, { isDeleted: true, updatedAt: new Date() });
-    console.log("\n\n \n\n bill === ", bill)
     var occurrences = await BillOccurrence.updateMany({ billId: req.body._id }, { isDeleted: true, updatedAt: new Date() })
-    console.log("\n\n \n\n occurrences === ", occurrences)
     if (!bill) return res.status(400).send({
         statusCode: 400,
         message: "Unable to delete Bill"
@@ -142,7 +143,6 @@ router.post("/create-bill", validateToken, async (req, res) => {
         var bill = await Bill.create(req.body);
         console.log("\n\n\n\n\n created bill = ", bill);
         createOccurrence(bill)
-        // create occurrences here
     }
 
     if (!bill) return res.status(400).send({
@@ -269,31 +269,41 @@ async function createOccurrence(bill, ignoreDates = []) {
     delete occurrence.createdAt
     delete occurrence.__v
 
+
     if (repeatsAfter > 0) {
         console.log("Entered repeating occurrence block")
-        while (moment().startOf('day') <= billCycleDate && billCycleDate <= lastOfNextMonth.endOf('day')) {
-            occurrence.occurrenceDate = billCycleDate.endOf('day')
-            // console.log("occurrenceDate = ", occurrence.occurrenceDate)
-            let ignoreDate = ignoreDates.filter(date => {
-                date = moment(date)
-                return date.format('D') == occurrence.occurrenceDate.format('D')
-                    && date.format('M') == occurrence.occurrenceDate.format('M')
-                    && date.format('YYYY') == occurrence.occurrenceDate.format('YYYY')
-            })
 
-            if (!ignoreDate.length) {
-                const billOccurrence = await BillOccurrence.find({
-                    billId: occurrence.billId,
-                    occurrenceDate: occurrence.occurrenceDate,
-                    isDeleted: false
+        while (billCycleDate <= lastOfNextMonth.endOf('day')) {
+            console.log("billCycleDate = ", billCycleDate.format("DD/MM/YYYY"))
+            console.log("Checking if " + billCycleDate.format("DD/MM/YYYY") + " falls between between " + moment().startOf('day').format("DD/MM/YYYY") + " and " + lastOfNextMonth.endOf('day').format("DD/MM/YYYY"))
+
+            if (moment().startOf('day') <= billCycleDate && billCycleDate <= lastOfNextMonth.endOf('day')) {
+                occurrence.occurrenceDate = billCycleDate.endOf('day')
+                console.log("Occurrence Date = ", occurrence.occurrenceDate)
+
+
+                let ignoreDate = ignoreDates.filter(date => {
+                    date = moment(date)
+                    return date.format('D') == occurrence.occurrenceDate.format('D')
+                        && date.format('M') == occurrence.occurrenceDate.format('M')
+                        && date.format('YYYY') == occurrence.occurrenceDate.format('YYYY')
                 })
-                console.log("Occurrence date = ", occurrence.occurrenceDate, ".. BillOccurrence found for the same?", billOccurrence.length ? true : false)
-                if (!billOccurrence.length) {
-                    console.log("\n Creating a new occurrence for date = ", occurrence.occurrenceDate, "\n", occurrence)
-                    BillOccurrence.create(occurrence);
+
+                if (!ignoreDate.length) {
+                    console.log("Entered Ignore Dates block\nDate to ignore= ", occurrence.occurrenceDate)
+                    const billOccurrence = await BillOccurrence.find({
+                        billId: occurrence.billId,
+                        occurrenceDate: occurrence.occurrenceDate,
+                        isDeleted: false
+                    })
+                    console.log("Occurrence date = ", occurrence.occurrenceDate, ".. BillOccurrence found for the same?", billOccurrence.length ? true : false)
+                    if (!billOccurrence.length) {
+                        console.log("\n Creating a new occurrence for date = ", occurrence.occurrenceDate, "\n", occurrence)
+                        BillOccurrence.create(occurrence);
+                    }
+                } else {
+                    console.log("Occurrence date = ", occurrence.occurrenceDate, ".. Skipping this as it is already paid")
                 }
-            } else {
-                console.log("Occurrence date = ", occurrence.occurrenceDate, ".. Skipping this as it is already paid")
             }
             billCycleDate = addDaysToDate(billCycleDate, repeatsAfter);
         }

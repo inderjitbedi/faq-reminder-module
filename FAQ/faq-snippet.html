@@ -55,7 +55,6 @@
       const jsonResult = await result.json();
       const faqs = jsonResult?.response?.faqs || [];
       var categoryObj = jsonResult?.response?.faqCategory || null;
-      console.log(categoryObj)
       let root = document.documentElement;
       root.style.setProperty('--background-color', categoryObj ? categoryObj.color || '#039ee3' : '#039ee3');
       document.getElementById('inner_banner').style.background = categoryObj ? 'url("' + baseUrl + categoryObj.coverFolderName + '/' + categoryObj.coverFileName + '")' : 'url(' + baseUrl + 'images/inner_page_banner.jpg)';
