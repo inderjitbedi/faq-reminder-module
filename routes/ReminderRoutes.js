@@ -30,13 +30,24 @@ function validateToken(req, res, next) {
         }
     })
 }
-
-// get bills
-router.get("/bills", validateToken, async (req, res) => {
+// createOccurrences
+router.get("/createOccurrences",validateToken, async (req, res) => {
     const bills = await getBills()
     bills.forEach(bill => {
         createOccurrence(bill);
     })
+    if (!bills) return res.status(400).send({
+        statusCode: 400,
+        message: "Unable to find Bills"
+    });
+    else return res.status(200).send({
+        statusCode: 200,
+        response: [...bills]
+    })
+})
+// get bills
+router.get("/bills", validateToken, async (req, res) => {
+    const bills = await getBills()
     if (!bills) return res.status(400).send({
         statusCode: 400,
         message: "Unable to find Bills"
@@ -118,7 +129,7 @@ router.post("/create-bill", validateToken, async (req, res) => {
 
     if (req.body._id) {
         var bill = await Bill.findOneAndUpdate({ _id: req.body._id }, { ...req.body, updatedAt: new Date() }, { returnDocument: 'after' });
-        console.log("\n\n\n\n\n updated bill = ", bill);
+        console.log("\n\n updated bill = ", bill);
         // update occurrences here
         var paidOccurrences = await BillOccurrence.find({
             billId: req.body._id,
@@ -128,7 +139,7 @@ router.post("/create-bill", validateToken, async (req, res) => {
             isPaid: true,
             isDeleted: false
         })
-        console.log("\n\n\n\n\n paidOccurrences = ", paidOccurrences);
+        console.log("\n\n paidOccurrences = ", paidOccurrences);
         // _.map(paidOccurrences, 'occurrenceDate')
         var occurrences = await BillOccurrence.updateMany({
             billId: req.body._id,
@@ -141,7 +152,7 @@ router.post("/create-bill", validateToken, async (req, res) => {
         createOccurrence(bill, _.map(paidOccurrences, 'occurrenceDate'));
     } else {
         var bill = await Bill.create(req.body);
-        console.log("\n\n\n\n\n created bill = ", bill);
+        console.log("\n\n created bill = ", bill);
         createOccurrence(bill)
     }
 
@@ -271,7 +282,7 @@ async function createOccurrence(bill, ignoreDates = []) {
 
 
     if (repeatsAfter > 0) {
-        console.log("Entered repeating occurrence block")
+        console.log("\n\nEntered repeating occurrence block")
 
         while (billCycleDate <= lastOfNextMonth.endOf('day')) {
             console.log("billCycleDate = ", billCycleDate.format("DD/MM/YYYY"))
@@ -279,8 +290,6 @@ async function createOccurrence(bill, ignoreDates = []) {
 
             if (moment().startOf('day') <= billCycleDate && billCycleDate <= lastOfNextMonth.endOf('day')) {
                 occurrence.occurrenceDate = billCycleDate.endOf('day')
-                console.log("Occurrence Date = ", occurrence.occurrenceDate)
-
 
                 let ignoreDate = ignoreDates.filter(date => {
                     date = moment(date)
@@ -290,16 +299,16 @@ async function createOccurrence(bill, ignoreDates = []) {
                 })
 
                 if (!ignoreDate.length) {
-                    console.log("Entered Ignore Dates block\nDate to ignore= ", occurrence.occurrenceDate)
+                    console.log("\n\nEntered Ignore Dates block\nDate to ignore= ", occurrence.occurrenceDate.format("DD/MM/YYYY"))
                     const billOccurrence = await BillOccurrence.find({
                         billId: occurrence.billId,
                         occurrenceDate: occurrence.occurrenceDate,
                         isDeleted: false
                     })
-                    console.log("Occurrence date = ", occurrence.occurrenceDate, ".. BillOccurrence found for the same?", billOccurrence.length ? true : false)
+                    console.log("BillOccurrence for " + occurrence.occurrenceDate.format("DD/MM/YYYY"), billOccurrence.length ? " found" : " not found")
                     if (!billOccurrence.length) {
-                        console.log("\n Creating a new occurrence for date = ", occurrence.occurrenceDate, "\n", occurrence)
-                        BillOccurrence.create(occurrence);
+                        console.log("\n Creating a new occurrence for ", occurrence.occurrenceDate, "\n", occurrence)
+                        await BillOccurrence.create(occurrence);
                     }
                 } else {
                     console.log("Occurrence date = ", occurrence.occurrenceDate, ".. Skipping this as it is already paid")
@@ -375,7 +384,7 @@ let job = cron.schedule('0 1 * * *', async function () {
     console.log("Checking autopay occurrences...")
     occurrences.forEach(async occurrence => {
         if (moment(occurrence.occurrenceDate) < moment() && occurrence.isAutopay) {
-            console.log(occurrence.name, " set to be autopaid on ", moment(occurrence.occurrenceDate), " is marked as paid")
+            console.log(occurrence.name, " set to be autopaid on ", moment(occurrence.occurrenceDate).format("DD/MM/YYYY"), " is marked as paid")
             await markOccurrenceAsPaid(occurrence._id);
         }
     })
