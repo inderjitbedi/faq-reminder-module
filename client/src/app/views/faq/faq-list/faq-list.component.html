@@ -1,0 +1,45 @@
+<div class="title-group">
+    <div class="title">
+        <h1 class="mat-h1" *ngIf="selectedFaqCategoryDoc?.name"><a class="link" routerLink="/dashboard/faq">FAQ Category List</a> > <i>{{selectedFaqCategoryDoc?.name|titlecase}}</i> > FAQ List</h1>
+    </div>
+    <div class="title-buttons ">
+        <button mat-raised-button color="primary" (click)="openFaqForm(false)">
+            Create
+        </button>
+        <button mat-raised-button color="accent" (click)="copyText()">
+            Copy FAQ snippet
+        </button> 
+    </div>
+</div>
+<mat-divider fxFlex="1 0"></mat-divider>
+<p class="no-data" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
+    There is no FAQ created yet!
+</p>
+<div class="container" *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> Id </th>
+            <td mat-cell *matCellDef="let element; let i = index"> {{i+1}} </td>
+        </ng-container>
+        <ng-container matColumnDef="question">
+            <th mat-header-cell *matHeaderCellDef> Question </th>
+            <td mat-cell *matCellDef="let element"> {{element.question}} </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+                <button mat-icon-button color="primary" (click)="openFaqForm(false,element)" aria-label="view">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" (click)="openFaqForm(true,element)" aria-label="view">
+                    <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteFaq(i,element)" aria-label="delete">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

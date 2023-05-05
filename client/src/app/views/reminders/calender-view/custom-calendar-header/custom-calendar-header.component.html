@@ -1,0 +1,9 @@
+<div class="custom-header">
+    <button mat-icon-button (click)="changeMonth(-1)" [disabled]="disableButton=='backward'">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
+    <span class="custom-header-label">{{periodLabel}}</span>
+    <button mat-icon-button (click)="changeMonth(1)" [disabled]="disableButton=='forward'">
+      <mat-icon>keyboard_arrow_right</mat-icon>
+    </button>
+  </div>

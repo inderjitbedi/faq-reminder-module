@@ -1,0 +1,126 @@
+<div class="title-group">
+    <div class="title">
+        <h1>Bills Due: ${{amountDue| number : '1.2-2'}}</h1>
+        <p>Through {{nextMonthDate | date:'MMM dd yyyy'}} (for the next <span>30</span> days.)</p>
+    </div>
+    <div class="title-buttons ">
+        <button mat-raised-button color="primary" (click)="openBillForm()">
+            Create
+        </button>
+        <!-- <button mat-raised-button color="primary" (click)="createOccurrences()">
+            Create Occurrences
+        </button> -->
+    </div>
+</div>
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" fitInkBarToContent animationDuration="0ms"
+    (selectedIndexChange)="tabChanged($event)" [selectedIndex]="selectedTab">
+
+    <mat-tab label="Upcoming Bills">
+        <div class="main-section" *ngIf="selectedTab==0">
+            <div class="col-6">
+                <h2>Overdue Bills</h2>
+                <div class="no-bills" *ngIf="reminders?.overdue?.length == 0">
+                    No over due bills
+                </div>
+                <div *ngFor="let reminder of reminders?.overdue; let index = index">
+                    <div class="reminder-tile  overdue">
+                        <div class="left-wrapper">
+                            <div><strong>Overdue:</strong></div>
+                            <div class="right-subsection">
+                                <div>{{reminder.occurrenceDate | date:'MMM dd, yyyy'}} {{reminder.name | titlecase}}
+                                </div>
+                                <div>${{reminder.amount}} <span class="pl-7">{{reminder.paymentMethodId.name |
+                                        titlecase}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <mat-slide-toggle (click)="markAsPaid($event,reminder._id,'overdue',index)">
+                                Mark as paid
+                            </mat-slide-toggle>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="col-6">
+                <h2>Upcoming or Paid Bills</h2>
+                <div class="no-bills" *ngIf="reminders?.paid?.length == 0
+                && reminders?.duesoon.length == 0
+                && reminders?.upcoming.length == 0">
+                    No upcoming or paid bills
+                </div>
+                <div *ngFor="let reminder of reminders?.paid">
+                    <div class="reminder-tile paid">
+                        <div class="left-wrapper">
+                            <div><strong>Paid:</strong></div>
+                            <div class="right-subsection">
+                                <div>{{reminder.occurrenceDate | date:'MMM dd, yyyy'}} {{reminder.name| titlecase}}
+                                </div>
+                                <div>${{reminder.amount }} <span class="pl-7">{{reminder.paymentMethodId.name |
+                                        titlecase}}</span>
+                                    <mat-icon matTooltip="Auto-pay ON" [matTooltipPosition]="'after'" class="fs-14 pl-7"
+                                        *ngIf="reminder.billId.isAutopay">autorenew</mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let reminder of reminders?.duesoon; let index = index">
+                    <div class="reminder-tile  duesoon">
+                        <div class="left-wrapper">
+                            <div><strong>Due Soon:</strong></div>
+                            <div class="right-subsection">
+                                <div>{{reminder.occurrenceDate | date:'MMM dd, yyyy'}} {{reminder.name| titlecase}}
+                                </div>
+                                <div>${{reminder.amount}} <span class="pl-7">{{reminder.paymentMethodId.name |
+                                        titlecase}}</span>
+                                    <mat-icon matTooltip="Auto-pay ON" [matTooltipPosition]="'after'"
+                                        class="fs-14 pl-7 " *ngIf="reminder.billId.isAutopay">autorenew</mat-icon>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div>
+                            <mat-slide-toggle (click)="markAsPaid($event,reminder._id,'duesoon',index)">
+                                Mark as paid
+                            </mat-slide-toggle>
+                        </div>
+
+                    </div>
+                </div>
+                <div *ngFor="let reminder of reminders?.upcoming; let index = index">
+                    <div class="reminder-tile upcoming">
+                        <div class="left-wrapper">
+                            <div><strong>Upcoming:</strong></div>
+                            <div class="right-subsection">
+                                <div>{{reminder.occurrenceDate | date:'MMM dd, yyyy'}} {{reminder.name| titlecase}}
+                                </div>
+                                <div>${{reminder.amount}} <span class="pl-7">{{reminder.paymentMethodId.name |
+                                        titlecase}}</span>
+                                    <mat-icon matTooltip="Auto-pay ON" [matTooltipPosition]="'after'" class="fs-14 pl-7"
+                                        *ngIf="reminder.billId.isAutopay">autorenew</mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <mat-slide-toggle (click)="markAsPaid($event,reminder._id,'upcoming',index)">
+                                Mark as paid
+                            </mat-slide-toggle>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-tab>
+    <mat-tab label="View as Calendar">
+        <calender-view *ngIf="selectedTab==1"></calender-view>
+    </mat-tab>
+    <mat-tab label="View All Bills">
+        <div class="min-height-100">
+            <app-bills-list #billList *ngIf="selectedTab==2"></app-bills-list>
+
+        </div>
+    </mat-tab>
+</mat-tab-group>

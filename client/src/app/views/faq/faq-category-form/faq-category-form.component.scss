@@ -1,0 +1,337 @@
+.container-div {
+    position: relative;
+
+    .mat-form-field {
+        width: 100%;
+    }
+
+    .mat-toolbar-footer {
+        display: flex;
+        width: 100%;
+
+        &.action-buttons {
+            justify-content: right;
+
+            button {
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .mat-toolbar-single-row {
+        padding: 0;
+        background-color: transparent;
+    }
+
+}
+
+.mat-toolbar-footer {
+    margin-top: 15px;
+}
+
+.addButton {
+    padding: 0;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mat-toolbar-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.mat-toolbar-single-row {
+    height: auto;
+}
+
+.mat-form-field-hint-wrapper {
+    display: block !important;
+    text-align: right;
+}
+
+.mt-30 {
+
+    margin-top: 30px;
+}
+
+
+.filelist-w {
+    margin: 0 0 0 0;
+    min-height: 0;
+    width: 97%;
+}
+
+.filelist-w+.caption-field {
+    margin-top: 10px;
+}
+
+.f-list {
+    display: flex;
+    align-items: center;
+    position: relative;
+    font-weight: 500;
+    // padding-bottom: 10px;
+    // border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+
+
+    .f-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: #177dff;
+        margin-right: 3px;
+        min-width: 5%;
+
+        max-width: 90%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+
+    .f-size {
+        font-size: 12px;
+        font-weight: 500;
+        color: #757575;
+    }
+
+}
+
+
+// Imports
+// 
+
+// Vars and Reset
+// 
+$theme: #454cad;
+$dark-text: #5f6982;
+
+html,
+body,
+* {
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+html,
+body {
+    height: 100%;
+    text-align: center;
+}
+
+body {
+    padding: 2rem;
+    background: #f8f8f8;
+}
+
+h2 {
+    font-family: "Roboto", sans-serif;
+    font-size: 26px;
+    line-height: 1;
+    color: $theme;
+    margin-bottom: 0;
+}
+
+p {
+    font-family: "Roboto", sans-serif;
+    font-size: 18px;
+    color: $dark-text;
+}
+
+// Upload Demo
+// 
+.uploadImage {
+    margin-top: 15px;
+}
+
+.centerAlign {
+    border: 3px solid #eee;
+    padding: 10px 20px;
+    margin: 10px auto;
+    border-radius: 7px;
+}
+
+.cursor-pointer {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+.pl20 {
+    padding-left: 20px;
+}
+
+.ml20 {
+    margin-left: 20px;
+}
+
+.color-viewer {
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    border-radius: 50%;
+    background-color: #000;
+    border: #aeaeae dotted 1px;
+}
+
+.info {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 16px;
+}
+
+.uploader {
+    display: block;
+    clear: both;
+    margin: 10px auto;
+    width: 100%;
+    max-width: 600px;
+
+    label {
+        cursor: pointer !important;
+        float: left;
+        clear: both;
+        width: 100%;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        background: #fff;
+        border-radius: 7px;
+        border: 3px solid #eee;
+        transition: all .2s ease;
+        user-select: none;
+
+        &:hover {
+            border-color: $theme;
+        }
+
+        &.hover {
+            border: 3px solid $theme;
+            box-shadow: inset 0 0 0 6px #eee;
+
+            #start {
+                i.fa {
+                    transform: scale(0.8);
+                    opacity: 0.3;
+                }
+            }
+        }
+    }
+
+
+    #start {
+        float: left;
+        clear: both;
+        width: 100%;
+
+        &.hidden {
+            display: none;
+        }
+
+        i.fa {
+            font-size: 50px;
+            margin-bottom: 1rem;
+            transition: all .2s ease-in-out;
+        }
+    }
+
+    #response {
+        float: left;
+        clear: both;
+        width: 100%;
+
+        &.hidden {
+            display: none;
+        }
+
+        #messages {
+            margin-bottom: .5rem;
+        }
+    }
+
+    #file-image {
+        display: inline-block;
+        margin: 0;
+        width: 100%;
+
+        &.hidden {
+            display: none;
+        }
+    }
+
+    #notimage {
+        display: block;
+        float: left;
+        clear: both;
+        width: 100%;
+
+        &.hidden {
+            display: none;
+        }
+    }
+
+    progress,
+    .progress {
+        // appearance: none;
+        display: inline;
+        clear: both;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 180px;
+        height: 8px;
+        border: 0;
+        border-radius: 4px;
+        background-color: #eee;
+        overflow: hidden;
+    }
+
+    .progress[value]::-webkit-progress-bar {
+        border-radius: 4px;
+        background-color: #eee;
+    }
+
+    .progress[value]::-webkit-progress-value {
+        background: linear-gradient(to right, darken($theme, 8%) 0%, $theme 50%);
+        border-radius: 4px;
+    }
+
+    .progress[value]::-moz-progress-bar {
+        background: linear-gradient(to right, darken($theme, 8%) 0%, $theme 50%);
+        border-radius: 4px;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    div {
+        margin: 0 0 .5rem 0;
+        color: $dark-text;
+    }
+
+    .btn {
+        display: inline-block;
+        margin: .5rem .5rem 1rem .5rem;
+        clear: both;
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        text-transform: initial;
+        border: none;
+        border-radius: .2rem;
+        outline: none;
+        padding: 0 1rem;
+        height: 36px;
+        line-height: 36px;
+        color: #fff;
+        transition: all 0.2s ease-in-out;
+        box-sizing: border-box;
+        background: $theme;
+        border-color: $theme;
+        cursor: pointer;
+    }
+}

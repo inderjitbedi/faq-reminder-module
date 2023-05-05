@@ -1,0 +1,263 @@
+<div fxLayout="column" class="container-div">
+    <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="end flex-end">
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between flex-end" class="mat-toolbar-header">
+            <span class="title dialog-title">{{selectedBill?'Edit':'Create'}} Bill</span>
+            <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()">
+                <span class="mat-button-wrapper">
+                    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
+                </span>
+            </button>
+        </div>
+    </mat-toolbar>
+    <mat-divider class="mt-10"></mat-divider>
+    <form [formGroup]="billForm" class="content mt-20 pb-125" fxLayout="column" fxLayout.gt-xs="row"
+        [class.form-div]="!isViewOnly" [class.mt-30]="isViewOnly">
+        <mat-form-field
+            [class.mb-10]="billForm.controls['name'].touched && billForm.controls['name'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Bill Name
+            </mat-label>
+            <input type="text" matInput formControlName="name" trim autocomplete="off" [errorStateMatcher]="matcher"
+                maxlength="50" [readonly]="isViewOnly">
+            <mat-error *ngIf="billForm.controls['name'].hasError('required')">Required
+            </mat-error>
+            <!-- <mat-error
+                            *ngIf="!billForm.controls['name'].hasError('required') && !billForm.controls['name'].hasError('pattern') && billForm.controls['name'].hasError('not_unique')">
+                            Category name already exists.
+                        </mat-error> -->
+            <mat-error
+                *ngIf="!billForm.controls['name'].hasError('required') && billForm.controls['name'].hasError('pattern')">
+                Category name can only be alpha-numeric.
+            </mat-error>
+            <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                billForm.controls['name'].value.length}}
+                {{nameMaxLength -
+                billForm.controls['name'].value.length>1?'characters':'character'}}
+                left.</mat-hint>
+        </mat-form-field>
+        <mat-form-field
+            [class.mb-10]="billForm.controls['amount'].touched && billForm.controls['amount'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Amount
+            </mat-label>
+            <input type="text" matInput formControlName="amount" trim autocomplete="off" [errorStateMatcher]="matcher"
+                maxlength="50" [readonly]="isViewOnly">
+            <mat-error *ngIf="billForm.controls['amount'].hasError('required')">Required
+            </mat-error>
+            <mat-error
+                *ngIf="!billForm.controls['amount'].hasError('required') && billForm.controls['amount'].hasError('pattern')">
+                Amount can only be numeric.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field
+            [class.mb-10]="billForm.controls['paymentMethodId'].touched && billForm.controls['paymentMethodId'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Payment Method
+            </mat-label>
+            <mat-select [disabled]="isViewOnly" formControlName="paymentMethodId">
+                <mat-option *ngFor="let method of paymentMethods" [value]="method._id">{{method.name}}
+                    <!-- <mat-icon (click)="clicked($event)">&#45; </mat-icon> -->
+                </mat-option>
+                <mat-option value="add_new">Add new
+                    <mat-icon class="option-icon">&#43;</mat-icon>
+                    <!-- (click)="clicked($event)" -->
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="billForm.controls['paymentMethodId'].hasError('required')">Required
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field *ngIf="createPaymentMethod"
+            [class.mb-10]="billForm.controls['paymentMethodName'].touched && billForm.controls['paymentMethodName'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Payment Method Name
+            </mat-label>
+
+            <input type="text" matInput formControlName="paymentMethodName" trim autocomplete="off"
+                [errorStateMatcher]="matcher" maxlength="50" [readonly]="isViewOnly">
+            <mat-error *ngIf="billForm.controls['paymentMethodName'].hasError('required')">Required
+            </mat-error>
+            <mat-error
+                *ngIf="!billForm.controls['paymentMethodName'].hasError('required') && !billForm.controls['paymentMethodName'].hasError('pattern') && billForm.controls['paymentMethodName'].hasError('not_unique')">
+                Payment Method Name already exists.
+            </mat-error>
+            <mat-error
+                *ngIf="!billForm.controls['paymentMethodName'].hasError('required') && billForm.controls['paymentMethodName'].hasError('pattern')">
+                Payment Method Name can only be alpha-numeric.
+            </mat-error>
+            <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                billForm.controls['paymentMethodName'].value.length}}
+                {{nameMaxLength -
+                billForm.controls['paymentMethodName'].value.length>1?'characters':'character'}}
+                left.</mat-hint>
+        </mat-form-field>
+        <mat-form-field
+            [class.mb-10]="billForm.controls['billCategoryId'].touched && billForm.controls['billCategoryId'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Category
+            </mat-label>
+            <mat-select [disabled]="isViewOnly" formControlName="billCategoryId">
+                <mat-option *ngFor="let method of billCategories" [value]="method._id">{{method.name}}
+                </mat-option>
+                <mat-option value="add_new">Add new +</mat-option>
+            </mat-select>
+            <mat-error *ngIf="billForm.controls['billCategoryId'].hasError('required')">Required
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field *ngIf="createBillCategory"
+            [class.mb-10]="billForm.controls['billCategoryName'].touched && billForm.controls['billCategoryName'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Category Name
+            </mat-label>
+
+            <input type="text" matInput formControlName="billCategoryName" trim autocomplete="off"
+                [errorStateMatcher]="matcher" maxlength="50" [readonly]="isViewOnly">
+            <mat-error *ngIf="billForm.controls['billCategoryName'].hasError('required')">Required
+            </mat-error>
+            <mat-error
+                *ngIf="!billForm.controls['billCategoryName'].hasError('required') && !billForm.controls['billCategoryName'].hasError('pattern') && billForm.controls['billCategoryName'].hasError('not_unique')">
+                Category name already exists.
+            </mat-error>
+            <mat-error
+                *ngIf="!billForm.controls['billCategoryName'].hasError('required') && billForm.controls['billCategoryName'].hasError('pattern')">
+                Category name can only be alpha-numeric.
+            </mat-error>
+            <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                billForm.controls['billCategoryName'].value.length}}
+                {{nameMaxLength -
+                billForm.controls['billCategoryName'].value.length>1?'characters':'character'}}
+                left.</mat-hint>
+        </mat-form-field>
+        <mat-form-field
+            [class.mb-10]="billForm.controls['note'].touched && billForm.controls['note'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Note
+            </mat-label>
+            <input type="text" matInput formControlName="note" trim autocomplete="off" [errorStateMatcher]="matcher"
+                [readonly]="isViewOnly">
+            <mat-error *ngIf="billForm.controls['note'].hasError('required')">Required
+            </mat-error>
+            <!-- <mat-error
+                            *ngIf="!billForm.controls['note'].hasError('required') && !billForm.controls['note'].hasError('pattern') && billForm.controls['name'].hasError('not_unique')">
+                            Category name already exists.
+                        </mat-error> -->
+            <!-- <mat-error
+                        *ngIf="!billForm.controls['note'].hasError('required') && billForm.controls['note'].hasError('pattern')">
+                        Category name can only be alpha-numeric.
+                    </mat-error> -->
+            <!-- <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                        billForm.controls['note'].value.length}}
+                        {{nameMaxLength -
+                        billForm.controls['note'].value.length>1?'characters':'character'}}
+                        left.</mat-hint> -->
+        </mat-form-field>
+        <mat-form-field
+            [class.mb-10]="billForm.controls['memo'].touched && billForm.controls['memo'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Memo
+            </mat-label>
+            <input type="text" matInput formControlName="memo" trim autocomplete="off" [errorStateMatcher]="matcher"
+                [readonly]="isViewOnly">
+            <mat-error *ngIf="billForm.controls['memo'].hasError('required')">Required
+            </mat-error>
+            <!-- <mat-error
+                            *ngIf="!billForm.controls['memo'].hasError('required') && !billForm.controls['memo'].hasError('pattern') && billForm.controls['name'].hasError('not_unique')">
+                            Category name already exists.
+                        </mat-error> -->
+            <!-- <mat-error
+                        *ngIf="!billForm.controls['memo'].hasError('required') && billForm.controls['memo'].hasError('pattern')">
+                        Category name can only be alpha-numeric.
+                    </mat-error> -->
+            <!-- <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                        billForm.controls['memo'].value.length}}
+                        {{nameMaxLength -
+                        billForm.controls['memo'].value.length>1?'characters':'character'}}
+                        left.</mat-hint> -->
+        </mat-form-field>
+        <mat-form-field
+            [class.mb-10]="billForm.controls['payee'].touched && billForm.controls['payee'].hasError('required')"
+            fxFlex="100">
+            <mat-label>Payee
+            </mat-label>
+            <input type="text" matInput formControlName="payee" trim autocomplete="off" [errorStateMatcher]="matcher"
+                [readonly]="isViewOnly">
+            <mat-error *ngIf="billForm.controls['payee'].hasError('required')">Required
+            </mat-error>
+            <!-- <mat-error
+                            *ngIf="!billForm.controls['payee'].hasError('required') && !billForm.controls['payee'].hasError('pattern') && billForm.controls['name'].hasError('not_unique')">
+                            Category name already exists.
+                        </mat-error> -->
+            <!-- <mat-error
+                        *ngIf="!billForm.controls['payee'].hasError('required') && billForm.controls['payee'].hasError('pattern')">
+                        Category name can only be alpha-numeric.
+                    </mat-error> -->
+            <!-- <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                        billForm.controls['payee'].value.length}}
+                        {{nameMaxLength -
+                        billForm.controls['payee'].value.length>1?'characters':'character'}}
+                        left.</mat-hint> -->
+        </mat-form-field>
+        <div fxFlex="100" class="pb-125">
+            <mat-checkbox formControlName="isAutopay">
+                Autopay?
+            </mat-checkbox>
+            <div>
+                What is Autopay
+                <mat-icon style="font-size: 17px; height:17px"
+                    matTooltip="Auto-pay is an automated process, which pays your balance in full each billing cycle on the due date, scheduled payments are manually entered by you for the date you choose each time you make a payment."
+                    [matTooltipPosition]="'after'" class="mat-icon material-icons info" role="img" aria-hidden="true">
+                    live_help
+                </mat-icon>
+            </div>
+        </div>
+        <div fxFlex="100" class="pb-125">
+            <mat-label>Occurs
+            </mat-label>
+            <mat-radio-group aria-label="Select occurrence" formControlName="occurrence">
+                <mat-radio-button value="0">Once</mat-radio-button>
+                <mat-radio-button value="repeating">Repeating</mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <!-- <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                        billForm.controls['billCategoryName'].value.length}}
+                        {{nameMaxLength -
+                        billForm.controls['billCategoryName'].value.length>1?'characters':'character'}}
+                        left.</mat-hint> -->
+        <mat-form-field *ngIf="isRepeatedOccurrence"
+            [class.mb-10]="billForm.controls['repeatedOccurrence'].hasError('required')" fxFlex="100">
+            <mat-label>Select repetition
+            </mat-label>
+            <mat-select [disabled]="isViewOnly" formControlName="repeatedOccurrence">
+                <mat-option *ngFor="let occurrence of occurrences" [value]="occurrence.value">{{occurrence.name}}
+                </mat-option>
+                <!-- <mat-option value="other">Custom days</mat-option> -->
+            </mat-select>
+            <mat-error *ngIf="billForm.controls['repeatedOccurrence'].hasError('required')">Required
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex="100" class="calendar-div">
+            <mat-label>Starts
+            </mat-label>
+            <input type="text" matInput [matDatepicker]="picker" formControlName="startDate"
+                [errorStateMatcher]="matcher"  [matDatepickerFilter]="minDateFilter">
+            <mat-hint class="align-left">MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error
+                *ngIf="billForm.controls['startDate'].hasError('required') && !billForm.controls['startDate'].hasError('matDatepickerParse')">Required
+            </mat-error>
+            <mat-error *ngIf="billForm.controls['startDate'].hasError('matDatepickerParse')">Invalid
+                date. Date format should be MM/DD/YYYY.
+            </mat-error>
+        </mat-form-field>
+    </form>
+    <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center" *ngIf="!isViewOnly">
+        <div fxlayout="row" fxLayoutAlign="flex-end" class="mt-12" fxFlex="100"
+            class="mat-toolbar-footer action-buttons">
+            <button type="submit" mat-raised-button color="primary" (click)="saveBill()"
+                [disabled]="billForm.invalid || apiCallActive">Save</button>
+
+
+            <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button>
+        </div>
+    </mat-toolbar>
+</div>

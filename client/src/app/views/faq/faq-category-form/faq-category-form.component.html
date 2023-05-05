@@ -1,0 +1,107 @@
+<div fxLayout="column" class="container-div">
+
+    <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="end flex-end">
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between flex-end" class="mat-toolbar-header">
+            <span class="title dialog-title">{{categoryId?'Edit':'Create'}} FAQ Category</span>
+            <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()">
+                <span class="mat-button-wrapper">
+                    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
+                </span>
+            </button>
+        </div>
+    </mat-toolbar>
+    <mat-divider class="mt-10"></mat-divider>
+    <div class="content p-20 mt-20" fxLayout="column">
+        <form [formGroup]="faqForm" fx-layout="column">
+            <div fxLayout="column" fxLayout.gt-xs="row" [class.form-div]="!isViewOnly" [class.mt-30]="isViewOnly">
+                <div fxLayout="column" fxLayout.gt-xs="row">
+                    <mat-form-field
+                        [class.mb-10]="faqForm.controls['name'].touched && faqForm.controls['name'].hasError('required')"
+                        fxFlex="100">
+                        <mat-label>Category Name
+                        </mat-label>
+                        <input type="text" matInput formControlName="name" trim autocomplete="off"
+                            [errorStateMatcher]="matcher" maxlength="50" [readonly]="isViewOnly">
+                        <mat-error *ngIf="faqForm.controls['name'].hasError('required')">Required
+                        </mat-error>
+                        <mat-error
+                            *ngIf="!faqForm.controls['name'].hasError('required') && !faqForm.controls['name'].hasError('pattern') && faqForm.controls['name'].hasError('not_unique')">
+                            Category name already exists.
+                        </mat-error>
+                        <mat-error
+                            *ngIf="!faqForm.controls['name'].hasError('required') && faqForm.controls['name'].hasError('pattern')">
+                            Category name can only be alpha-numeric.
+                        </mat-error>
+                        <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                            faqForm.controls['name'].value.length}}
+                            {{nameMaxLength -
+                            faqForm.controls['name'].value.length>1?'characters':'character'}}
+                            left.</mat-hint>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="column" fxLayout.gt-xs="row" class="mt-20">
+                    <div class="cursor-pointer" (click)="toggle = !toggle">
+                        <span> Choose Color <i class="fa fa-eyedropper" aria-hidden="true"></i> *</span>
+                        <span class="color-viewer ml20" [style.background]="faqForm.controls['color']['value']"> <span
+                                class="ml20">&nbsp;{{faqForm.controls['color']['value']}}</span></span>
+                    </div>
+                    <div [hidden]="!toggle" class="centerAlign">
+                        <span class="cursor-pointer" [(colorPicker)]="color" [cpOKButton]="false"
+                            (colorPickerChange)="colorChanged( $event)" [cpCancelButton]="false" [cpDisableInput]="true"
+                            [cpAlphaChannel]="'disabled'" [cpDialogDisplay]="'inline'" [cpOutputFormat]="'hex'"
+                            [cpToggle]="toggle">
+                        </span>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayout.gt-xs="row" class="uploadImage mt-20">
+                    <mat-label>Cover Image *
+                        <mat-icon matTooltip="Please select an image. Max size: 4MB" [matTooltipPosition]="'after'"
+                            class="mat-icon material-icons info" role="img" aria-hidden="true">
+                            info
+                        </mat-icon>
+                    </mat-label>
+                    <div id="file-upload-form" class="uploader">
+                        <input id="file-upload" type="file" name="fileUpload" accept="image/png,image/jpeg,image/jpg"
+                            (change)="uploadFiles($event)" />
+                        <label for="file-upload" id="file-drag">
+                            <div id="start" *ngIf="!uploadingInProgess && !attachment">
+                                <i class="fa fa-download" aria-hidden="true"></i>
+                                <div></div>
+                                <div id="notimage">Please select an image. Max size: 4MB</div>
+                                <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
+                            </div>
+                            <div id="response" *ngIf="uploadingInProgess">
+                                <div id="messages">Uploading... {{uploadingProgress ?
+                                    (uploadingProgress- 1)+'%' : '0%' }}</div>
+                                <progress class="progress" value="{{uploadingProgress}}" max="100">
+                                </progress>
+                            </div>
+                            <img id="file-image" *ngIf="!uploadingInProgess && attachment"
+                                [src]="attachment?.coverPath? environment.baseUrl + attachment?.coverFolderName +'/'+ attachment?.coverFileName:''"
+                                alt="Preview" (change)="uploadFiles($event)">
+                        </label>
+                    </div>
+                    <mat-error *ngIf="faqForm.controls['cover']?.hasError('required')">Required
+                    </mat-error>
+                    <mat-error *ngIf="!faqForm.controls['cover']?.hasError('required') 
+                            && faqForm.controls['name'].hasError('file_type')">
+                        Choose a certain type of file.
+                    </mat-error>
+                    <mat-error *ngIf="!faqForm.controls['cover'].hasError('required')
+                            && !faqForm.controls['name'].hasError('file_type') 
+                            && faqForm.controls['name'].hasError('file_size')">
+                        File size should not be greater than 4MB.
+                    </mat-error>
+                </div>
+            </div>
+        </form>
+    </div>
+    <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center" *ngIf="!isViewOnly">
+        <div fxlayout="row" fxLayoutAlign="flex-end" class="mt-12" fxFlex="100"
+            class="mat-toolbar-footer action-buttons">
+            <button type="submit" mat-raised-button color="primary" [disabled]="faqForm.invalid || apiCallActive"
+                (click)="saveFaqs()">Save</button>
+            <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button>
+        </div>
+    </mat-toolbar>
+</div>

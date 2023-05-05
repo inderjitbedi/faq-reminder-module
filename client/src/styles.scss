@@ -1,0 +1,398 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.sidenav div {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.move-to-end {
+    margin-top: auto;
+}
+
+.mat-icon-button {
+    background: transparent;
+}
+
+@media (min-width: 1199px) {
+    .cdk-overlay-pane {
+        .mat-dialog-container {
+            width: 780px !important;
+        }
+    }
+}
+
+.cdk-overlay-pane {
+    .mat-dialog-container {
+        height: auto;
+        margin: 25px 0 !important
+    }
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+
+}
+
+.mat-error {
+    font-size: 12px !important;
+}
+
+.color-picker {
+    border: 0 !important;
+    margin: auto;
+}
+
+.mt-20 {
+    margin-top: 20px !important;
+}
+
+.container-div {
+    position: relative;
+
+    .mat-form-field {
+        width: 100%;
+    }
+
+    .mat-toolbar-footer {
+        display: flex;
+        width: 100%;
+
+        &.action-buttons {
+            justify-content: right;
+
+            button {
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .mat-toolbar-single-row {
+        padding: 0;
+        background-color: transparent;
+    }
+
+}
+
+.pb-125 {
+    padding-bottom: 1.25em;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mat-toolbar-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.mat-toolbar-single-row {
+    height: auto;
+}
+
+.mt-30 {
+
+    margin-top: 30px;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mat-toolbar-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.mat-toolbar-single-row {
+    height: auto;
+}
+
+.mat-form-field-hint-wrapper {
+    display: block !important;
+    text-align: right;
+}
+
+.align-left {
+    display: block;
+    text-align: left !important;
+}
+
+.mt-30 {
+
+    margin-top: 30px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.form-div {
+    margin-bottom: 20px;
+}
+
+.calendar-div {
+    .mat-form-field-infix {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        box-sizing: border-box;
+        // width: 100% !important;
+
+        input {
+            // width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        mat-datepicker-toggle {
+            height: 15px;
+            flex-shrink: 0;
+            display: inline-flex;
+
+            button {
+                top: -15px;
+            }
+        }
+
+    }
+}
+
+.custom-date {
+    &.duesoon {
+        background: #fbe89b;
+        // &:hover {
+        //     &::after {
+        //         content: "hello"
+        //     }
+        // }
+    }
+
+    &.overdue {
+        background: #ef6b6e;
+    }
+
+    &.upcoming {
+        background: #a1daf1
+    }
+
+    &.paid {
+        background: #b6edac
+    }
+
+    border-radius: 100%;
+
+    &::after {
+        content: '1';
+        position: relative;
+        top: 5px;
+        right: 0;
+    }
+}
+
+
+.link:hover {
+    color: #3f51b5;
+}
+
+.title-group {
+    display: flex;
+
+    h1 {
+        color: #000;
+    }
+
+    flex-direction: row;
+
+    button {
+        margin: 0 0 15px 15px;
+    }
+
+    .title,
+    .title-buttons {
+        width: 50%;
+    }
+
+    .title-buttons>button {
+        float: right;
+    }
+}
+
+.no-data {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: calc(100% - 51px);
+    min-height: 100px;
+    align-items: center;
+}
+
+.reminder-tile {
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    justify-content: space-between;
+    // max-width:50%;
+    width: 100%;
+
+    div {
+        color: inherit;
+    }
+
+    .left-wrapper {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .right-subsection {
+        display: flex;
+        flex-direction: column;
+        margin-left: 5px;
+        font-size: 14px;
+    }
+}
+
+.overdue {
+    border: 1px solid #C76163;
+    color: #C76163;
+    background: linear-gradient(#F6DADB, #F2BABC);
+}
+
+.duesoon {
+    border: 1px solid #ad8f5c;
+    color: #ad8f5c;
+    background: linear-gradient(#f0e6c0, #fcf2c9);
+}
+
+.upcoming {
+    border: 1px solid #4698b4;
+    color: #4698b4;
+    background: linear-gradient(#c5e8f7, #bbe4f5);
+}
+
+.paid {
+    border: 1px solid #449258;
+    color: #449258;
+    background: linear-gradient(#d9f0d5, #caeac4);
+}
+
+.main-section {
+    display: flex;
+    flex-direction: row;
+    column-gap: 15px;
+    margin-bottom: 15px;
+    width: 100%;
+    color: #000;
+    justify-content: space-between;
+
+    h2 {
+        margin-bottom: 5px;
+    }
+}
+
+.col-6 {
+    width: 50%;
+}
+
+.mat-calendar-controls {
+    color: #000;
+    margin: 0 !important;
+}
+
+.mat-calendar-header {
+    padding: 0;
+}
+
+.title-group {
+    margin-bottom: 20px;
+    padding: 8px;
+    color: #000;
+    background: linear-gradient(#cce5ff, #c5d8ef);
+    border: 1px solid #c5d8ef;
+    border-radius: 5px;
+
+    h1 {
+        margin-bottom: 0;
+    }
+
+    p {
+        font-size: 12px;
+        color: #838383;
+        margin: 0;
+    }
+
+    span:not(.mat-button-wrapper) {
+        color: #0098ff;
+
+    }
+}
+
+.calendar-wrapper {
+    width: 95% !important;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    color: #000;
+
+    a {
+        color: rgb(63, 81, 181);
+        font-size: 12px;
+        text-decoration: none;
+
+        &.active {
+            color: #000;
+        }
+    }
+}
+
+.mat-tab-label-container {
+    flex-grow: inherit !important;
+}
+
+.no-bills {
+    font-size: 1rem;
+}
+
+.fs-14 {
+    font-size: 14px;
+}
+
+.pl-7 {
+    padding-left: 7px;
+}
+
+.pl-15 {
+    padding-left: 15px;
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+    background-color: #449258;
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+    background-color:  #b4ebaa;
+}

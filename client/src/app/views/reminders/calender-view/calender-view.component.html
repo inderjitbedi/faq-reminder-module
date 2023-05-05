@@ -1,0 +1,91 @@
+<div class="main-section">
+  <div class="col-6">
+    <!-- <calender-view *ngIf="!apiCallActive" [reminders]="reminders"></calender-view> -->
+    <div class="calendar-wrapper">
+      <mat-calendar #calendar *ngIf="!apiCallActive" [headerComponent]="customHeader" [minDate]="minDate"
+        [maxDate]="maxDate" [dateClass]="dateClass"></mat-calendar>
+    </div>
+  </div>
+  <div class="col-6 mt-30">
+    <div class="no-bills " *ngIf="reminders?.paid?.length == 0
+    && reminders?.duesoon.length == 0
+    && reminders?.upcoming.length == 0
+    && reminders?.overdue.length == 0">
+      No bills found
+    </div>
+    <div *ngFor="let reminder of reminders.paid">
+      <div class="reminder-tile paid">
+        <div class="left-wrapper">
+          <div><strong>Paid:</strong></div>
+          <div class="right-subsection">
+            <div>{{reminder.occurrenceDate | date:'MMM dd, yyyy'}} {{reminder.name| titlecase}}
+            </div>
+            <div>${{reminder.amount}} <span class="pl-7">{{reminder.paymentMethodId.name | titlecase}}</span>
+              <mat-icon class="fs-14 pl-7" matTooltip="Auto-pay ON" [matTooltipPosition]="'after'"
+                *ngIf="reminder.billId.isAutopay">autorenew</mat-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngFor="let reminder of reminders.overdue; let index=index">
+      <div class="reminder-tile  overdue">
+        <div class="left-wrapper">
+          <div><strong>Overdue:</strong></div>
+          <div class="right-subsection">
+            <div>{{reminder.occurrenceDate | date:'MMM dd, yyyy'}} {{reminder.name | titlecase}}
+            </div>
+            <div>${{reminder.amount}} <span class="pl-7">{{reminder.paymentMethodId.name | titlecase}}</span></div>
+          </div>
+
+
+        </div>
+        <div>
+          <mat-slide-toggle (click)="markAsPaid($event,reminder._id,'duesoon',index)">
+            Mark as paid
+          </mat-slide-toggle>
+        </div>
+      </div>
+    </div>
+    <div *ngFor="let reminder of reminders.duesoon; let index=index">
+      <div class="reminder-tile  duesoon">
+        <div class="left-wrapper">
+          <div><strong>Due Soon:</strong></div>
+          <div class="right-subsection">
+            <div>{{reminder.occurrenceDate | date:'MMM dd, yyyy'}} {{reminder.name| titlecase}}
+            </div>
+            <div>${{reminder.amount}} <span class="pl-7">{{reminder.paymentMethodId.name | titlecase}}</span>
+              <mat-icon class="fs-14 pl-7" matTooltip="Auto-pay ON" [matTooltipPosition]="'after'"
+                *ngIf="reminder.billId.isAutopay">autorenew</mat-icon>
+            </div>
+          </div>
+        </div>
+        <div>
+          <mat-slide-toggle (click)="markAsPaid($event,reminder._id,'duesoon',index)">
+            Mark as paid
+          </mat-slide-toggle>
+        </div>
+      </div>
+    </div>
+    <div *ngFor="let reminder of reminders.upcoming; let index=index">
+      <div class="reminder-tile upcoming">
+        <div class="left-wrapper">
+          <div><strong>Upcoming:</strong></div>
+          <div class="right-subsection">
+            <div>{{reminder.occurrenceDate | date:'MMM dd, yyyy'}} {{reminder.name| titlecase}}
+            </div>
+            <div>${{reminder.amount}} <span class="pl-7">{{reminder.paymentMethodId.name | titlecase}}</span>
+              <mat-icon class="fs-14 pl-7" matTooltip="Auto-pay ON" [matTooltipPosition]="'after'"
+                *ngIf="reminder.billId.isAutopay">autorenew</mat-icon>
+            </div>
+          </div>
+        </div>
+        <div>
+          <mat-slide-toggle (click)="markAsPaid($event,reminder._id,'duesoon',index)">
+            Mark as paid
+          </mat-slide-toggle>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
