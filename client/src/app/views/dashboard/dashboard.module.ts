@@ -10,21 +10,21 @@ const routes = [
     path: '',
     component: DashboardComponent,
     children: [
-      // {
-      //   path: 'faq',
-      //   loadChildren: () =>
-      //     import('../../views/faq/faq.module').then((m) => m.FaqModule),
-      //   canActivate: [AuthGuard],
-      // },
       {
-        path: 'reminders',
+        path: 'faq',
         loadChildren: () =>
-          import('../../views/reminders/reminders.module').then(
-            (m) => m.RemindersModule
-          ),
+          import('../../views/faq/faq.module').then((m) => m.FaqModule),
         canActivate: [AuthGuard],
       },
-      { path: '**', redirectTo: 'reminders' },
+      // {
+      //   path: 'reminders',
+      //   loadChildren: () =>
+      //     import('../../views/reminders/reminders.module').then(
+      //       (m) => m.RemindersModule
+      //     ),
+      //   canActivate: [AuthGuard],
+      // },
+      { path: '**', redirectTo: 'faq' },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },
